@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--Import Bootstrap CSS-Framework-->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+        />
+        <!--Import CSS-->
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+        <title>{% block title %}Home{% endblock %}</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-center">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+              <div class="navbar-nav mr-auto">
+                {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" id="home" href="{{ url_for('views.home') }}">Home</a>
+                <a class="nav-item nav-link" id="add" href="{{ url_for('views.add') }}">Add Workout</a>
+                <a class="nav-item nav-link" id="history" href="{{ url_for('views.history') }}">History</a>  
+                {% endif %}
+              </div>
+              <div class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" id="logout" href="{{ url_for('views.account') }}">Account</a>
+                <a class="nav-item nav-link" id="logout" href="{{ url_for('auth.logout') }}">Logout</a>
+                {% else %}
+                <a class="nav-item nav-link" id="login" href="{{ url_for('auth.login') }}">Login</a>
+                <a class="nav-item nav-link" id="signUp" href="{{ url_for('auth.register') }}">Register</a>
+                {% endif %}
+              </div>
+            </div>
+        </nav>
+        <main role="main" class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <!-- Leer -->
+                </div>
+                <div class="col-lg-8">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages%}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    {% block content %}{% endblock %}
+                </div> 
+                <div class="col-lg-2">
+                    <!-- Leer -->
+                </div>   
+            </div>
+        </main>
+    </body>

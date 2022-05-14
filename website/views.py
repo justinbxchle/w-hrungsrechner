@@ -24,7 +24,7 @@ def home():
 def add():
     form = WorkoutForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, category=form.category.data, author=current_user)
+        post = Post(title=form.title.data, content=form.content.data, category_id=form.category.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Post has been created!', 'success')
@@ -47,6 +47,7 @@ def update_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
+        post.category_id = form.category.data
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('views.post', post_id=post.id))

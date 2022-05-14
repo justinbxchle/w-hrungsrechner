@@ -12,7 +12,7 @@
             <div class="article-metadata">
                 <a class="mr-2" href="{{ url_for('views.accounts', user_id=post.author.id) }}">{{ post.author.username }}</a>
                 <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
-                <small>{{ post.category }}</small>
+                <small>{{ post.category_id }}</small>
             </div>
                 
             

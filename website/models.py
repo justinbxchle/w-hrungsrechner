@@ -1,6 +1,7 @@
 from website import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
+from sqlalchemy import insert
 
 
 @login_manager.user_loader
@@ -12,8 +13,10 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     image = db.Column(db.String(20), nullable=False, default='default.jpg')
+    bio = db.Column(db.String(150))
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    ratings = db.relationship('Rating', backref='rater', lazy=True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image}')"
@@ -23,7 +26,28 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    ratings = db.relationship('Rating', backref='rated', lazy=True)
+    
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date}')"
+
+class Rating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    rate = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Post('{self.rate}')"
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    term = db.Column(db.String(30), nullable=False)
+    posts = db.relationship('Post', backref='overname', lazy=True)
+
+    def __repr__(self):
+        return f"Post('{self.term}')"
+

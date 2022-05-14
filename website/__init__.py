@@ -4,6 +4,7 @@ from sqlalchemy_utils.functions import database_exists
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
+
 def create_database(app):
     if not database_exists('sqlite:///database.db'):
         db.create_all(app=app)

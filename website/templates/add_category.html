@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Add Workout{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST", action="">
+        {{ form.hidden_tag() }}
+        <!--That is adding a CSRF-Token Informieren -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-group">
+                {{ form.term.label(class="form-control-label") }}
+                {% if form.term.errors %}
+                    {{ form.term(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.term.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.term(class="form-control form-control-lg") }}
+                {% endif %} 
+            </div>   
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% for category in categories %}
+<article class="media content-section">
+    <div>
+        <p class="article-content">{{ category.term }}</p>
+    </div>
+</article>
+{% endfor %}
+{% endblock %}

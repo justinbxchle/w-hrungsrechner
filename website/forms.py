@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from website.models import User
 from flask_login import current_user
@@ -33,6 +33,7 @@ class AccountUpdateForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Change Profile Picture', validators=[FileAllowed(['jpg','png','gif'])])
+    bio = TextAreaField('Biography', validators=[Length(max=150)])
     submit = SubmitField('Change Settings')
 
     def validate_username(self, username):
@@ -50,4 +51,9 @@ class AccountUpdateForm(FlaskForm):
 class WorkoutForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
+    category = SelectField('Category', validators=[DataRequired()], choices=[('Toy'), ('Car'), ('Smartphone')])
     submit = SubmitField('Post')
+
+class AddCategoryForm(FlaskForm):
+    term = StringField('Term', validators=[DataRequired()])
+    submit = SubmitField('Create')

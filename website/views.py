@@ -1,9 +1,9 @@
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 from flask_login import login_required, current_user
-from website.forms import AccountUpdateForm, WorkoutForm
+from website.forms import AccountUpdateForm, WorkoutForm, AddCategoryForm
 from website import db, app
-from .models import Post
+from .models import Post, User, Category
 import secrets
 from PIL import Image
 import os
@@ -24,11 +24,11 @@ def home():
 def add():
     form = WorkoutForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        post = Post(title=form.title.data, content=form.content.data, category=form.category.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Post has been created!', 'success')
-        return redirect(url_for('views.history'))
+        return redirect(url_for('views.accounts', user_id=current_user.id))
     return render_template("add.html", form=form, legend='New Post')
 
 @views.route('/post/<int:post_id>')
@@ -77,9 +77,11 @@ def save_picture(form_picture):
     return picture_filename
 #Methode schreiben zum löschen der alten Bilder, wenn das Bild geändert wird
 
-@views.route('/account', methods=['GET', 'POST'])
+@views.route('/account/<int:user_id>/update', methods=['GET', 'POST'])
 @login_required
-def account():
+def update_account(user_id):
+    if user_id != current_user.id:
+        abort(403)
     form = AccountUpdateForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -87,12 +89,35 @@ def account():
             current_user.image = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.bio = form.bio.data
         db.session.commit()
         flash('Your account information has been changed!', 'success')
-        return redirect(url_for('views.account'))
+        return redirect(url_for('views.accounts', user_id=current_user.id))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.bio.data = current_user.bio
     image = url_for('static', filename='profile_pictures/' + current_user.image)
-    return render_template("account.html", image=image, form=form)
+    return render_template("update_account.html", image=image, form=form)
+
+@views.route('/account/<int:user_id>')
+@login_required
+def accounts(user_id):
+    user = User.query.get_or_404(user_id)
+    image = url_for('static', filename='profile_pictures/' + user.image)
+    posts = Post.query.all()
+    return render_template("accounts.html", user=user, image=image, posts=posts)
+
+
+@views.route('/add_categry', methods=['GET', 'POST'])
+def add_category():
+    categories = Category.query.all()
+    form = AddCategoryForm()
+    if form.validate_on_submit():
+        category = Category(term=form.term.data)
+        db.session.add(category)
+        db.session.commit()
+        flash('Cateegory has been created!', 'success')
+        return redirect(url_for('views.add_category', user_id=current_user.id))
+    return render_template("add_category.html", form=form, legend='New Category', categories=categories)
 

@@ -3,8 +3,14 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from website.models import User
+from wtforms_sqlalchemy.fields import QuerySelectField
+#from website.models import User
 from flask_login import current_user
+from .models import Category, User
+
+
+toy = Category.query.first()
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -51,9 +57,15 @@ class AccountUpdateForm(FlaskForm):
 class WorkoutForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
-    category = SelectField('Category', validators=[DataRequired()], choices=[('Toy'), ('Car'), ('Smartphone')])
+    category = SelectField('Category')
     submit = SubmitField('Post')
 
 class AddCategoryForm(FlaskForm):
     term = StringField('Term', validators=[DataRequired()])
     submit = SubmitField('Create')
+
+class FilterPostForm(FlaskForm):
+    category = SelectField('Category')
+    #rating = SelectField('Minimum Rating', choices=[('---'), ('1 Star'), ('2 Stars'), ('3 Stars'), ('4 Stars'), ('5 Stars')])
+    submit = SubmitField('Filter')
+

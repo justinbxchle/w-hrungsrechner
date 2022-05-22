@@ -1,7 +1,6 @@
 from website import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
-from sqlalchemy import insert
 
 
 @login_manager.user_loader
@@ -21,6 +20,14 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image}')"
 
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    term = db.Column(db.String(30), nullable=False)
+    posts = db.relationship('Post', backref='overname', lazy=True)
+
+    def __repr__(self):
+        return f"{self.term}"
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -32,7 +39,7 @@ class Post(db.Model):
     
 
     def __repr__(self):
-        return f"Post('{self.title}', '{self.date}')"
+        return f"Post('{self.title}', '{self.date}', '{self.overname}', '{self.user_id}')"
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,13 +48,7 @@ class Rating(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
     def __repr__(self):
-        return f"Post('{self.rate}')"
+        return f"Rating('{self.rate}')"
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    term = db.Column(db.String(30), nullable=False)
-    posts = db.relationship('Post', backref='overname', lazy=True)
-
-    def __repr__(self):
-        return f"Post('{self.term}')"
+    
 

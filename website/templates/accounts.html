@@ -13,7 +13,7 @@
             <p class="text-secondary">{{ user.bio }}</p>
             {% if user == current_user %}
             <div>
-                <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_account', user_id=current_user.id) }}">Edit Profile</a>
+                <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_account', username=current_user.username) }}">Edit Profile</a>
             </div>
             {% endif %}
         </div>
@@ -27,6 +27,7 @@
             <div class="article-metadata">
                 <a class="mr-2" href="#">{{ post.author.username }}</a>
                 <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
+                <small>{{ post.overname.term }}</small>    
             </div>
             <h2><a class="article-title" href="{{ url_for('views.post', post_id=post.id) }}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
@@ -34,5 +35,4 @@
         </article>
     {% endif %}
 {% endfor %}
-
 {% endblock %}

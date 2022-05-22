@@ -1,7 +1,8 @@
 
+from unicodedata import category
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 from flask_login import login_required, current_user
-from website.forms import AccountUpdateForm, WorkoutForm, AddCategoryForm
+from website.forms import AccountUpdateForm, WorkoutForm, AddCategoryForm, FilterPostForm
 from website import db, app
 from .models import Post, User, Category
 import secrets
@@ -13,22 +14,38 @@ views = Blueprint('views',__name__)
 
 
 @views.route('/')
-@views.route('/home')
+@views.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
     posts = Post.query.all()
-    return render_template("home.html", posts=posts)
+    categories = Category.query
+    form = FilterPostForm()
+    form.category.choices = categories
+    if form.validate_on_submit():
+        category = Category.query.filter_by(term=form.category.data).first()
+        flash('You Have Filtered Your Feed!', 'success')
+        return redirect(url_for('views.filter', category=category))
+    return render_template("home.html", posts=posts, form=form)
+
+@views.route('/home/filter=<category>')
+@login_required
+def filter(category):
+    posts = Post.query.all()
+    return render_template("filter.html", posts=posts, category=category)
 
 @views.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
+    categories = Category.query.all()
     form = WorkoutForm()
+    form.category.choices = categories
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, category_id=form.category.data, author=current_user)
+        category = Category.query.filter_by(term=form.category.data).first()
+        post = Post(title=form.title.data, content=form.content.data, overname=category, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Post has been created!', 'success')
-        return redirect(url_for('views.accounts', user_id=current_user.id))
+        return redirect(url_for('views.accounts', username=current_user.username))
     return render_template("add.html", form=form, legend='New Post')
 
 @views.route('/post/<int:post_id>')
@@ -43,11 +60,13 @@ def update_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+    categories = Category.query.all()
     form = WorkoutForm()
+    form.category.choices = categories
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
-        post.category_id = form.category.data
+        post.overname = form.category.object_data
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('views.post', post_id=post.id))
@@ -78,10 +97,10 @@ def save_picture(form_picture):
     return picture_filename
 #Methode schreiben zum löschen der alten Bilder, wenn das Bild geändert wird
 
-@views.route('/account/<int:user_id>/update', methods=['GET', 'POST'])
+@views.route('/account/<username>/update', methods=['GET', 'POST'])
 @login_required
-def update_account(user_id):
-    if user_id != current_user.id:
+def update_account(username):
+    if username != current_user.username:
         abort(403)
     form = AccountUpdateForm()
     if form.validate_on_submit():
@@ -93,7 +112,7 @@ def update_account(user_id):
         current_user.bio = form.bio.data
         db.session.commit()
         flash('Your account information has been changed!', 'success')
-        return redirect(url_for('views.accounts', user_id=current_user.id))
+        return redirect(url_for('views.accounts', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -101,18 +120,23 @@ def update_account(user_id):
     image = url_for('static', filename='profile_pictures/' + current_user.image)
     return render_template("update_account.html", image=image, form=form)
 
-@views.route('/account/<int:user_id>')
+@views.route('/account/<username>', methods=['GET'])
 @login_required
-def accounts(user_id):
-    user = User.query.get_or_404(user_id)
-    image = url_for('static', filename='profile_pictures/' + user.image)
-    posts = Post.query.all()
+def accounts(username):
+    user = User.query.filter_by(username = username).first()
+    if user:
+        image = url_for('static', filename='profile_pictures/' + user.image)
+        posts = Post.query.all()
+    else:
+        abort(404)
     return render_template("accounts.html", user=user, image=image, posts=posts)
 
-
-@views.route('/add_categry', methods=['GET', 'POST'])
+"""
+@views.route('/add_category', methods=['GET', 'POST'])
+@login_required
 def add_category():
     categories = Category.query.all()
+    posts = Post.query.all()
     form = AddCategoryForm()
     if form.validate_on_submit():
         category = Category(term=form.term.data)
@@ -120,5 +144,5 @@ def add_category():
         db.session.commit()
         flash('Cateegory has been created!', 'success')
         return redirect(url_for('views.add_category', user_id=current_user.id))
-    return render_template("add_category.html", form=form, legend='New Category', categories=categories)
-
+    return render_template("add_category.html", form=form, legend='New Category', categories=categories, posts=posts)
+"""

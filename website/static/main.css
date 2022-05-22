@@ -81,3 +81,8 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
+#filter{
+  font-size: 15px;
+  color: black;
+  text-align: right;
+}

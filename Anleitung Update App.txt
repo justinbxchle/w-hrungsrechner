@@ -1,0 +1,32 @@
+Anleitung zum Updaten von Flask App:
+
+1. git init
+
+2. git add .
+
+3. (git status)
+
+4. git commit -m "Text"
+
+5. git push origin main
+
+(Heroku CLI muss heruntergeladen sein!)
+
+6. heroku login
+
+7. heroku git:remote -a "Name der App in Heroku"
+
+8. git push heroku main
+
+Erstellen Procfile/requirements.txt:
+
+(pip install gunicorn)
+
+1. echo > Procfile
+
+2. In die Datei: web: gunicorn app:app
+
+3. pip freeze > requirements.txt
+
+
+

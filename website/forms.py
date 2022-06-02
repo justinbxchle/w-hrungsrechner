@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, SearchField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from wtforms_sqlalchemy.fields import QuerySelectField
 #from website.models import User
@@ -54,10 +54,14 @@ class AccountUpdateForm(FlaskForm):
             if user:
                 raise ValidationError('Email already taken.')
 
-class WorkoutForm(FlaskForm):
+class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
     category = SelectField('Category')
+    submit = SubmitField('Post')
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('Content', validators=[DataRequired()])
     submit = SubmitField('Post')
 
 class AddCategoryForm(FlaskForm):
@@ -68,4 +72,8 @@ class FilterPostForm(FlaskForm):
     category = SelectField('Category')
     #rating = SelectField('Minimum Rating', choices=[('---'), ('1 Star'), ('2 Stars'), ('3 Stars'), ('4 Stars'), ('5 Stars')])
     submit = SubmitField('Filter')
+
+class SearchForm(FlaskForm):
+    search = SearchField('', validators=[DataRequired()])
+    submit = SubmitField('Search')
 

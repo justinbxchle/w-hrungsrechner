@@ -4,13 +4,13 @@
 
 {% block content %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.author.image) }}">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.post_author.image) }}">
         <div class="media-body">
             <div class="article-metadata">
-                <a class="mr-2" href="{{ url_for('views.accounts', username=post.author.username) }}">{{ post.author.username }}</a>
+                <a class="mr-2" href="{{ url_for('views.accounts', username=post.post_author.username) }}">{{ post.post_author.username }}</a>
                 <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
                 <a class="mr-2" id="filter" href="{{ url_for('views.filter', category=post.overname.term) }}">{{ post.overname.term }}</a>  
-                {% if post.author == current_user %}
+                {% if post.post_author == current_user %}
                 <div>
                     <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_post', post_id=post.id) }}">Update</a>
                     <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
@@ -21,4 +21,32 @@
             <p class="article-content">{{ post.content }}</p>        
         </div>
     </article>
+    <hr>
+    {% for comment in comments | reverse %}
+        <article class="media content-section">
+            <a href="{{ url_for('views.accounts', username=comment.comment_author.username) }}" >
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + comment.comment_author.image) }}">
+            </a>
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{{ url_for('views.accounts', username=comment.comment_author.username) }}">{{ comment.comment_author.username }}</a>
+                    <small class="text-muted">{{ comment.date.strftime('%Y-%m-%d') }}</small>
+                    {% if comment.comment_author == current_user %}
+                <div>
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_comment', comment_id=comment.id) }}">Update</a>
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                </div>
+                {% endif %}
+                </div>
+                
+                <p class="article-content">{{ comment.content }}</p>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock %}
+
+{% block content_right %}
+    <div class="media body" style="margin-top: 10px">
+        <a class="btn btn-secondary btn-sm m-1" style="align-items: center" href="{{ url_for('views.add_comment', post_id=post.id) }}">Add Comment</a>
+    </div>
 {% endblock %}

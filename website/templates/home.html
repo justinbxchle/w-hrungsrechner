@@ -4,61 +4,19 @@
 
 {% block content %}
 
-
-
-<!-- Einsetzen der einzelnen Posts-->
-    {% for post in posts | reverse %}
+    <h1>Homepage</h1>
+    {% for currency in currencies | reverse %}
         <article class="media content-section">
-            <a href="{{ url_for('views.accounts', username=post.post_author.username) }}" >
-                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.post_author.image) }}">
-            </a>
+            
+            
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="{{ url_for('views.accounts', username=post.post_author.username) }}">{{ post.post_author.username }}</a>
-                    <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
-                    <a class="mr-2" id="filter" href="{{ url_for('views.filter', category=post.overname.term) }}">{{ post.overname.term }}</a>
+                    <a class="mr-2" href="#">{{ currency.identifier }}</a>
+                    
                 </div>
-                <h2><a class="article-title" href="{{ url_for('views.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-                <p class="article-content">{{ post.content }}</p>
+                <h2><a class="article-title" href="#">{{ currency.name }}</a></h2>
             </div>
         </article>
     {% endfor %}
-
-{% endblock %}
-
-<!-- Erstellen der Filteroberfläche -->
-{% block content_right %}
-
-    <form method="POST", action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <article class="media content-section">
-                <div class="media-body">
-                    <div class="article-metadata">
-                        Filter
-                    </div>
-                    <div class="article-title">
-                        <div class="form-group">
-                            {{ form.category.label(class="form-control-label") }}
-                            {% if form.category.errors %}
-                                {{ form.category(class="form-control form-control-lg is-invalid") }}
-                                <div class="invalid-feedback">
-                                    {% for error in form.category.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form.category(class="form-control form-control-lg") }}
-                            {% endif %} 
-                        </div>
-
-                        <div class="form-group">
-                            {{ form.submit(class="btn btn-outline-info") }}
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </fieldset>
-    </form>
 
 {% endblock %}

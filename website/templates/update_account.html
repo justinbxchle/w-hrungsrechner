@@ -9,7 +9,6 @@
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
-                <p class="text-secondary">{{ current_user.bio }}</p>
             </div>
         </div>
         
@@ -42,19 +41,6 @@
                             </div>
                         {% else %}
                             {{ form.email(class="form-control form-control-lg") }}
-                        {% endif %} 
-                    </div>
-                    <div class="form-group">
-                        {{ form.bio.label(class="form-control-label") }}
-                        {% if form.bio.errors %}
-                            {{ form.bio(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.bio.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.bio(class="form-control form-control-lg") }}
                         {% endif %} 
                     </div>
                     <div class="form-group">

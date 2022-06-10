@@ -34,6 +34,20 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 10px; 
 }
 
+.chart-section {
+  background: #ffffff;
+  border: 2px solid #dddddd; 
+}
+
+.chart {
+  background: #ffffff; 
+  width: 635px; 
+  height: 500px;
+  border: 2px solid #dddddd;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
 .article-title {
   color: #444444;
 }
@@ -47,10 +61,11 @@ a.article-title:hover {
   white-space: pre-line;
 }
 
-.article-img {
+.article-identifier {
   height: 65px;
-  width: 65px;
-  margin-right: 16px;
+  width: 30px;
+  margin-right: 60px;
+  margin-top: 10px;
 }
 
 .article-metadata {
@@ -81,8 +96,6 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
-#filter{
-  font-size: 15px;
-  color: black;
-  text-align: right;
+.purchase {
+  margin-left: 20px;
 }

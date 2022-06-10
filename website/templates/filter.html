@@ -2,6 +2,8 @@
 
 {% block title %}Home{% endblock %}
 
+
+
 {% block content %}
 
 {% for post in posts | reverse %}
@@ -14,7 +16,8 @@
                 <a class="mr-2" href="{{ url_for('views.accounts', username=post.post_author.username) }}">{{ post.post_author.username }}</a>
                 <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
                 <small>{{ post.category_id.id }}</small>
-                <small id="filter">{{ post.overname.term }}</small>    
+                <small id="filter">{{ post.overname.term }}</small>   
+                <img class="article-star" class="rounded-circle ariticle-img" src="{{ url_for('static', filename='star_rating/'+ post.star +'.jpg') }}"> 
             </div>
                 
             
@@ -26,3 +29,4 @@
 {% endfor %}
 
 {% endblock %}
+

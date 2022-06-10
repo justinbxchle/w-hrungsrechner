@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Visualize</h1>
+
+
+            <iframe class="chart" frameborder="0"
+                    noresize="noresize"
+                    src="{{ url_for('views.chart') }}"
+                    frameborder="0">
+            </iframe>
+
+
+{% endblock %}

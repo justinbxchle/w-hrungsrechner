@@ -1,0 +1,37 @@
+{% extends "post.html" %}
+
+{% block modal %}
+
+<div class="modal" id="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <h2>Sure you want to delete it?</h2>
+        </div>
+        <div class="modal-footer">
+            <form method="POST", action="">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>         
+    
+{% endblock %}
+
+{% block script %}
+  <script>
+      $(document).ready(function(){
+          console.log("window is loaded")
+          $("#modal").modal("show")
+      })
+  </script>
+{% endblock %}

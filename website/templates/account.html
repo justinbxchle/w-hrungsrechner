@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}My Account{% endblock %}
+
+
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ image }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ current_user.username }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
+                <div>
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_account') }}">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% for purchase in purchases | reverse %}
+        {% if purchase.buyer == current_user %}
+            <article class="media content-section">
+                <h1 class="article-identifier">{{ purchase.currency.identifier }}</h1>
+                
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <small>Value</small>
+                        <small class="text-muted">{{ purchase.date.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    <p class="article-content">{{ purchase.amount }} {{ purchase.currency.character }}</p>
+                </div>
+            </article>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block content_right %}
+
+    <div class="media body" style="margin-top: 10px">
+        <a class="btn btn-secondary btn-sm m-1" style="align-items: center" href="{{ url_for('views.dashboard') }}">Dashboard</a>
+    </div>
+
+{% endblock %}

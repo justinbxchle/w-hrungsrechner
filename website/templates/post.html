@@ -4,16 +4,19 @@
 
 {% block content %}
     <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.post_author.image) }}">
+        <a href="{{ url_for('views.accounts', username=post.post_author.username) }}" >
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.post_author.image) }}">
+        </a>
         <div class="media-body">
             <div class="article-metadata">
                 <a class="mr-2" href="{{ url_for('views.accounts', username=post.post_author.username) }}">{{ post.post_author.username }}</a>
                 <small class="text-muted">{{ post.date.strftime('%Y-%m-%d') }}</small>
-                <a class="mr-2" id="filter" href="{{ url_for('views.filter', category=post.overname.term) }}">{{ post.overname.term }}</a>  
+                <a class="mr-2" id="filter" href="{{ url_for('views.filter', category=post.overname.term) }}">{{ post.overname.term }}</a>
+                <img class="article-star" class="rounded-circle ariticle-img" src="{{ url_for('static', filename='star_rating/'+ post.star +'.jpg') }}">  
                 {% if post.post_author == current_user %}
                 <div>
                     <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_post', post_id=post.id) }}">Update</a>
-                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                    <a type="button" class="btn btn-danger btn-sm m-1" href="{{ url_for('views.delete_post', post_id=post.id) }}">Delete</a>
                 </div>
                 {% endif %}
             </div>
@@ -34,7 +37,7 @@
                     {% if comment.comment_author == current_user %}
                 <div>
                     <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('views.update_comment', comment_id=comment.id) }}">Update</a>
-                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                    <a type="button" class="btn btn-danger btn-sm m-1" href="{{ url_for('views.delete_comment', comment_id=comment.id) }}">Delete</a>
                 </div>
                 {% endif %}
                 </div>
@@ -43,10 +46,20 @@
             </div>
         </article>
     {% endfor %}
+
+    {% block modal %}{% endblock %}
+
 {% endblock %}
+
+
 
 {% block content_right %}
     <div class="media body" style="margin-top: 10px">
         <a class="btn btn-secondary btn-sm m-1" style="align-items: center" href="{{ url_for('views.add_comment', post_id=post.id) }}">Add Comment</a>
     </div>
 {% endblock %}
+
+{% block scripts %} {% block script%}{% endblock %} {% endblock %}
+
+
+

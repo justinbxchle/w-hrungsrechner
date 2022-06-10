@@ -1,15 +1,10 @@
-
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, SearchField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SearchField, FloatField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from wtforms_sqlalchemy.fields import QuerySelectField
-#from website.models import User
 from flask_login import current_user
-from .models import Category, User
+from .models import Currency, User
 
-
-toy = Category.query.first()
 
 
 class RegistrationForm(FlaskForm):
@@ -39,7 +34,6 @@ class AccountUpdateForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Change Profile Picture', validators=[FileAllowed(['jpg','png','gif'])])
-    bio = TextAreaField('Biography', validators=[Length(max=150)])
     submit = SubmitField('Change Settings')
 
     def validate_username(self, username):
@@ -54,19 +48,6 @@ class AccountUpdateForm(FlaskForm):
             if user:
                 raise ValidationError('Email already taken.')
 
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    category = SelectField('Category')
-    submit = SubmitField('Post')
-
-class CommentForm(FlaskForm):
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
-
-class AddCategoryForm(FlaskForm):
-    term = StringField('Term', validators=[DataRequired()])
-    submit = SubmitField('Create')
 
 class FilterPostForm(FlaskForm):
     category = SelectField('Category')
@@ -76,4 +57,19 @@ class FilterPostForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = SearchField('', validators=[DataRequired()])
     submit = SubmitField('Search')
+
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Delete')
+
+class CurrencyConvertForm(FlaskForm):
+    input = SelectField('From', validators=[DataRequired()])
+    output = SelectField('To', validators=[DataRequired()])
+    amount = FloatField('Amount', validators=[DataRequired()])
+    submit = SubmitField('Convert')
+
+class PurchaseForm(FlaskForm):
+    currency = SelectField('Currency', validators=[DataRequired()])
+    amount = FloatField('Amount', validators=[DataRequired()])
+    date = DateField('Date', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 

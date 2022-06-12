@@ -13,9 +13,7 @@ import yfinance as yf
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import plotly.io as pio
-from datetime import datetime, timedelta
-import time
-import atexit
+from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 

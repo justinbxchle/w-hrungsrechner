@@ -27,7 +27,7 @@
                         <small>Value</small>
                         <small class="text-muted">{{ datetime.now().strftime('%Y-%m-%d') }}</small>
                     </div>
-                    <p class="article-content">{{ purchase.amount * yf.Ticker(purchase.currency.identifier + 'USD=X').info['regularMarketPrice'] | round(2, 'ceil')}} $</p>
+                    <p class="article-content">{{ purchase.amount * purchase.currency.rate | round(2, 'ceil')}} $</p>
                 </div>
             
             </article>
@@ -41,9 +41,7 @@
                     <p class="article-content">Value:</p>
                 </div>
                 <div class="media-body purchase">
-                    <p class="article-content">{{ Purchase.query.with_entities(func.sum(Purchase.amount)).filter_by(currency=currency).first() | int }} $</p>
-                    <p class="article-content">{{ yf.Ticker(currency.identifier + 'USD=X').info['regularMarketPrice'] | round(4, 'ceil')}}</p>
-                    
+                    <p class="article-content">{{ Purchase.query.with_entities(func.sum(Purchase.amount)).filter_by(currency=currency).scalar() * currency.rate | round(2, 'common')}} $</p>
                 </div>
             </article>
         {% endif %}

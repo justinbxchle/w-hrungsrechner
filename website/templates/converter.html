@@ -77,8 +77,8 @@
         <div class="article-metadata">
             <h2 class="article-title">Result</h2>
         </div>
-        <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'ceil') }} {{ Currency.query.filter_by(name=form.input.data).first().identifier }}/{{ Currency.query.filter_by(name=form.output.data).first().identifier }}</p>  
-        <p class="article-content">The Total Value: <br> {{ value | round(2, 'ceil')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
+        <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'common') }} {{ Currency.query.filter_by(name=form.input.data).first().identifier }}/{{ Currency.query.filter_by(name=form.output.data).first().identifier }}</p>  
+        <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
     </div>
 </article>
 

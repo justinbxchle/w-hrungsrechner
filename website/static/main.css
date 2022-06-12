@@ -69,7 +69,7 @@ a.article-title:hover {
 }
 
 .article-metadata {
-  padding-bottom: 1px;
+  padding-bottom: 5px;
   margin-bottom: 4px;
   border-bottom: 1px solid #e3e3e3;
 }
@@ -98,4 +98,6 @@ a.article-title:hover {
 
 .purchase {
   margin-left: 20px;
+  padding-right: 20px;
 }
+

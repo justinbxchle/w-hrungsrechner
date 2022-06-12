@@ -6,7 +6,7 @@
 {% block content %}
     <div class="content-section">
         <div class="media">
-            <img class="rounded-circle account-img" src="{{ image }}">
+            <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pictures/' + current_user.image) }}">
             <div class="media-body">
                 <h2 class="account-heading">{{ current_user.username }}</h2>
                 <p class="text-secondary">{{ current_user.email }}</p>
@@ -26,12 +26,19 @@
                     <div class="article-metadata">
                         <small>Value</small>
                         <small class="text-muted">{{ purchase.date.strftime('%Y-%m-%d') }}</small>
+                        
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('views.update_purchase', purchase_id=purchase.id) }}">Update</a>
+                            <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url_for('views.delete_purchase', purchase_id=purchase.id) }}">Delete</a>
+                        
                     </div>
                     <p class="article-content">{{ purchase.amount }} {{ purchase.currency.character }}</p>
+                    
                 </div>
             </article>
         {% endif %}
     {% endfor %}
+
+    {% block modal %}{% endblock %}
 {% endblock %}
 
 {% block content_right %}
@@ -41,3 +48,5 @@
     </div>
 
 {% endblock %}
+
+{% block scripts %} {% block script %}{% endblock %} {% endblock %}

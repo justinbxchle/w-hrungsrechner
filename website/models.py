@@ -33,6 +33,7 @@ class Currency(db.Model):
     identifier = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     character = db.Column(db.String(2), nullable=False)
+    rate = db.Column(db.Float(), nullable=False)
     purchases = db.relationship('Purchase', backref='currency', lazy=True)
 
     def __repr__(self):

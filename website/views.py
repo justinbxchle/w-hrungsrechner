@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
 from flask_login import login_required, current_user
-from website.forms import SearchForm, AccountUpdateForm, CurrencyConvertForm, PurchaseForm
+from website.forms import SearchForm, AccountUpdateForm, CurrencyConvertForm, PurchaseForm, DeleteForm
 from sqlalchemy import func
 from website import db, app
 from .models import Currency, User, Purchase
@@ -14,6 +14,9 @@ import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import plotly.io as pio
 from datetime import datetime, timedelta
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 
@@ -90,50 +93,43 @@ def purchase():
 @views.route('/chart')
 def chart():
     return render_template("chart.html")
-"""
-@views.route('/post/<int:post_id>')
-@login_required
-def post(post_id):
-    post = Post.query.get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id=post.id)
-    return render_template("post.html", post=post, comments=comments)
 
-@views.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@views.route('/purchase/update/<int:purchase_id>', methods=['GET', 'POST'])
 @login_required
-def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.post_author != current_user:
+def update_purchase(purchase_id):
+    currencies = Currency.query.all()
+    form = PurchaseForm()
+    form.currency.choices = currencies
+    purchase = Purchase.query.get_or_404(purchase_id)
+    if purchase.buyer != current_user:
         abort(403)
-    categories = Category.query.all()
-    form = PostForm()
-    form.category.choices = categories
     if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
-        overname = Category.query.filter_by(term=form.category.data).first()
-        post.overname = overname
+        purchase.date = form.date.data
+        purchase.amount = form.amount.data
+        purchase.currency = Currency.query.filter_by(name=form.currency.data).first()
         db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('views.post', post_id=post.id))
+        flash('Purchase has been updated!', 'success')
+        return redirect(url_for('views.account'))
     elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
-    return render_template("add_post.html", form=form, legend='Update Post')
+        form.date.data = purchase.date
+        form.amount.data = purchase.amount
+        form.currency.data = purchase.currency.name
+    return render_template("add_purchase.html", form=form, legend='New Purchase')
 
-@views.route('/post/<int:post_id>/delete', methods=['GET','POST'])
+@views.route('/purchase/delete/<int:purchase_id>', methods=['GET','POST'])
 @login_required
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.post_author != current_user:
+def delete_purchase(purchase_id):
+    purchases = Purchase.query.all()
+    purchase = Purchase.query.get_or_404(purchase_id)
+    if purchase.buyer != current_user:
         abort(403)
     form = DeleteForm()
     if form.validate_on_submit():
-        db.session.delete(post)
+        db.session.delete(purchase)
         db.session.commit()
-        flash('Post has been deleted!', 'success')
-        return redirect(url_for('views.accounts', username=current_user.username))
-    return render_template('delete.html', post=post, form=form)
-"""
+        flash('Purchase has been deleted!', 'success')
+        return redirect(url_for('views.account', purchases=purchases))
+    return render_template('delete.html', purchase=purchase, form=form, purchases=purchases)
 
 
 def save_picture(form_picture):
@@ -166,15 +162,15 @@ def update_account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image = url_for('static', filename='profile_pictures/' + current_user.image)
-    return render_template("update_account.html", image=image, form=form)
+    
+    return render_template("update_account.html", form=form)
 
 @views.route('/account', methods=['GET'])
 @login_required
 def account():
-    image = url_for('static', filename='profile_pictures/' + current_user.image)
+    
     purchases = Purchase.query.order_by(Purchase.date).all()
-    return render_template("account.html", image=image, purchases=purchases)
+    return render_template("account.html", purchases=purchases)
 
 @views.route('/dashboard')
 @login_required
@@ -194,9 +190,9 @@ def search():
         posts = posts.order_by(Post.title).all()
         return render_template("search.html", form=form, search=search, posts=posts)
     return "You have to type something"
-"""
 
-"""
+
+
 @views.route('/add_category', methods=['GET', 'POST'])
 @login_required
 def add_category():
@@ -211,3 +207,15 @@ def add_category():
         return redirect(url_for('views.add_category', user_id=current_user.id))
     return render_template("add_category.html", form=form, legend='New Category', categories=categories, posts=posts)
 """
+
+#Updating Currency Rate every 10min
+def UpdateRate():
+    currencies = Currency.query.all()
+    for currency in currencies:
+        rate = yf.Ticker(currency.identifier + 'USD=X').info['regularMarketPrice']
+        currency.rate = rate
+        db.session.commit()
+
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(func=UpdateRate, trigger="interval", minutes=10)
+scheduler.start()

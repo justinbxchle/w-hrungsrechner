@@ -5,8 +5,9 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_login import current_user
 from .models import User
 
+#Erstellen der Formulare
 
-
+#Account
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -14,6 +15,7 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
+    #Überprüfung und Weitergabe des Erros wenn der Username und/oder die Email schon vergeben ist
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
@@ -33,9 +35,10 @@ class LoginForm(FlaskForm):
 class AccountUpdateForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    picture = FileField('Change Profile Picture', validators=[FileAllowed(['jpg','png','gif'])])
+    picture = FileField('Change Profile Picture', validators=[FileAllowed(['jpg','png'])])
     submit = SubmitField('Change Settings')
 
+    #Überprüfung und Weitergabe des Erros wenn der Username und/oder die Email schon vergeben ist
     def validate_username(self, username):
         if username.data != current_user.username:
             user = User.query.filter_by(username=username.data).first()
@@ -49,17 +52,6 @@ class AccountUpdateForm(FlaskForm):
                 raise ValidationError('Email already taken.')
 
 
-class FilterPostForm(FlaskForm):
-    category = SelectField('Category')
-    #rating = SelectField('Minimum Rating', choices=[('---'), ('1 Star'), ('2 Stars'), ('3 Stars'), ('4 Stars'), ('5 Stars')])
-    submit = SubmitField('Filter')
-
-class SearchForm(FlaskForm):
-    search = SearchField('', validators=[DataRequired()])
-    submit = SubmitField('Search')
-
-class DeleteForm(FlaskForm):
-    submit = SubmitField('Delete')
 
 class CurrencyConvertForm(FlaskForm):
     input = SelectField('From', validators=[DataRequired()])
@@ -73,6 +65,9 @@ class PurchaseForm(FlaskForm):
     amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=1)])
     date = DateField('Date', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Delete')
 
 class PortfolioForm(FlaskForm):
     currency = SelectField('', choices=[('All')])

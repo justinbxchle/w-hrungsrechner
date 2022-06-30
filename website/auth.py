@@ -4,15 +4,18 @@ from website import db, bcrypt
 from .models import User
 from flask_login import login_user, current_user, login_required, logout_user
 
+
 auth = Blueprint('auth',__name__)
 
-
+#Registrierung
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
+    #Wenn der Benutzer schon eingelogged ist wird er wieder zurückgeschickt
     if current_user.is_authenticated:
         return redirect(url_for('views.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        #Das Password wird gehasht mit Bcrypt (Blowfish Algorithmus)
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)

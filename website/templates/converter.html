@@ -64,6 +64,7 @@
                 frameborder="0">
         </iframe>
 
+        
 {% endif %}
 
 {% endblock %}
@@ -81,6 +82,11 @@
         <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
     </div>
 </article>
+
+<div class="media body" style="margin-top: 10px">
+    <a class="btn btn-secondary btn-sm m-1" style="align-items: center" target="_blank" href="https://finance.yahoo.com/quote/{{ Currency.query.filter_by(name=form.input.data).first().identifier }}{{ Currency.query.filter_by(name=form.output.data).first().identifier }}=X">Yahoo Finance</a>
+</div>
+
 
 {% endif %}
 

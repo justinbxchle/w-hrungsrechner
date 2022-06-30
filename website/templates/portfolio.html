@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Hallo{% endblock %}
+
+{% block content %}
+
+{% if chart == True %}
+    <center>
+        <h1>Your Portfolio</h1>
+        <small>(in USD)</small>
+    </center>
+    <center>
+  
+      <canvas id="chart" width="600" height="400"></canvas>
+      
+    <script>
+
+      // bar chart data
+      var barData = {
+        labels : [
+          {% for item in labels %}
+            "{{ item }}",
+          {% endfor %}
+        ],
+
+        datasets : [{
+          fillColor: "rgba(151,187,205,0.2)",
+          strokeColor: "rgba(151,187,205,1)",
+          pointColor: "rgba(151,187,205,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          bezierCurve : false,
+          data : [
+	    {% for item in values %}
+              {{ item }},
+            {% endfor %}]
+          }
+	]
+      }
+
+      Chart.defaults.global.animationSteps = 50;
+      Chart.defaults.global.tooltipYPadding = 16;
+      Chart.defaults.global.tooltipCornerRadius = 0;
+      Chart.defaults.global.tooltipTitleFontStyle = "normal";
+      Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+      Chart.defaults.global.animationEasing = "easeOutBounce";
+      Chart.defaults.global.responsive = false;
+      Chart.defaults.global.scaleLineColor = "black";
+      Chart.defaults.global.scaleFontSize = 16;
+
+      // get bar chart canvas
+      var mychart = document.getElementById("chart").getContext("2d");
+
+      steps = 10
+      max = {{ max }}
+      // draw bar chart
+      var LineChartDemo = new Chart(mychart).Line(barData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true,
+        bezierCurve: false,
+      });
+
+    </script>
+    </center>
+{% endif %}
+
+{% endblock %}
+
+{% block content_right %}
+
+<form method="POST", action="">
+  {{ form.hidden_tag() }}
+  <fieldset class="form-group">
+      <article class="media content-section">
+          <div class="media-body">
+              <div class="article-metadata">
+                  Filter
+              </div>
+              <div class="article-title">
+                <div class="form-group">
+                  {{ form.currency.label(class="form-control-label") }}
+                  {% if form.currency.errors %}
+                      {{ form.currency(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.currency.errors %}
+                              <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                    {{ form.currency(class="form-control form-control-lg") }}
+                  
+                  {% endif %} 
+              </div>  
+
+                  <div class="form-group">
+                    {{ form.time.label(class="form-control-label") }}
+                    {% if form.time.errors %}
+                        {{ form.time(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.time.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                      {{ form.time(class="form-control form-control-lg") }}
+                    
+                    {% endif %} 
+                </div>
+                <div class="form-group">
+                      {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+              </div>
+          </div>
+      </article>
+  </fieldset>
+</form>
+
+{% endblock %}

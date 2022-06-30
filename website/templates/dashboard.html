@@ -8,7 +8,7 @@
             <div class="media-body">
                 <div class="article-metadata">
                     <h4 class="article-title">
-                        <a class="mr-2" href="{{ url_for('views.home') }}">{{ currency.identifier }} | {{ currency.name }}</a>
+                        <a class="mr-2" href="{{ url_for('views.portfolio') }}">{{ currency.identifier }} | {{ currency.name }}</a>
                     </h4>
                 </div>
                 <div class="articel-content">
@@ -27,7 +27,7 @@
                         <small>Value</small>
                         <small class="text-muted">{{ datetime.now().strftime('%Y-%m-%d') }}</small>
                     </div>
-                    <p class="article-content">{{ purchase.amount * purchase.currency.rate | round(2, 'ceil')}} $</p>
+                    <p class="article-content">{{ purchase.amount * purchase.currency.rate |round(3)}} $</p>
                 </div>
             
             </article>

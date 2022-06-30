@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SearchField, FloatField, DateField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from flask_login import current_user
-from .models import Currency, User
+from .models import User
 
 
 
@@ -68,8 +68,13 @@ class CurrencyConvertForm(FlaskForm):
     submit = SubmitField('Convert')
 
 class PurchaseForm(FlaskForm):
+    type = SelectField('Type', choices=[('Buy'),('Sell')])
     currency = SelectField('Currency', validators=[DataRequired()])
-    amount = FloatField('Amount', validators=[DataRequired()])
+    amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=1)])
     date = DateField('Date', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class PortfolioForm(FlaskForm):
+    currency = SelectField('', choices=[('All')])
+    time = SelectField('', choices=[('7','1 Week'),('30','1 Month'),('12','1 Year'),('24','2 Years'),('1','Max')])
+    submit = SubmitField('Submit')

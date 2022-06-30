@@ -1,4 +1,3 @@
-
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from .forms import RegistrationForm, LoginForm
 from website import db, bcrypt

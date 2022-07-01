@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SearchField, FloatField, DateField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, FloatField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from flask_login import current_user
 from .models import User
@@ -50,7 +50,6 @@ class AccountUpdateForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email already taken.')
-
 
 
 class CurrencyConvertForm(FlaskForm):

@@ -34,19 +34,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 10px; 
 }
 
-.chart-section {
-  background: #ffffff;
-  border: 2px solid #dddddd; 
-}
-
-.chart {
-  background: #ffffff; 
-  width: 635px; 
-  height: 500px;
-  border: 2px solid #dddddd;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
 
 .article-title {
   color: #444444;

@@ -46,14 +46,6 @@ def converter():
             ticker = str(input.identifier + output.identifier + "=X")
             rate = yf.Ticker(ticker).info['regularMarketPrice']
             value = form.amount.data * rate
-            #Der Chart wird erstellt
-            start = datetime.now() - timedelta(days=5)
-            hist = yf.download(tickers=ticker, period='max', start=start, interval="5m")
-            fig = go.Figure(data=go.Scatter(x=hist.index,y=hist['Close'], mode='lines'))
-            fig.update_layout(
-                title= str(input.identifier + "/" + output.identifier)
-            )
-            pio.write_html(fig, file='website/templates/chart.html', auto_open=False)
         except:
             #Wenn keine Verbindung oder das Währungspaar nicht unterstützt werden wird ein Error ausgegeben
             flash('Either Yahoo Finance Does Not Support This Exchange Rate Or No Connection Could Be Established!', 'danger')
@@ -120,7 +112,7 @@ def update_purchase(purchase_id):
         form.date.data = purchase.date
         form.amount.data = abs(purchase.amount)
         form.currency.data = purchase.currency.name
-    return render_template("activity.html", form=form, legend='Update Purchase')
+    return render_template("activity.html", form=form, legend='Update Activity')
 
 #Löschen eines Kaufs/Verkaufs
 @views.route('/purchase/delete/<int:purchase_id>', methods=['GET','POST'])
@@ -225,7 +217,7 @@ def portfolio():
             #Die Tage in dem ausgewählten Zeitraum werden ermittelt
             days = pd.date_range(end = datetime.today(), periods = period).to_pydatetime().tolist()
             #Die Käufe/Verkäufe, die vor dem Zeitraum liegen werden aufsummiert
-            beginn = Purchase.query.filter(Purchase.date < days[1].strftime('%Y-%m-%d')).all()
+            beginn = Purchase.query.filter(Purchase.date < days[0].strftime('%Y-%m-%d')).all()
             for currency in currencies:
                 for purchase in beginn:
                     if purchase.currency == currency and purchase.buyer == current_user:
@@ -244,7 +236,7 @@ def portfolio():
             #Die Tage in dem ausgewählten Zeitraum werden ermittelt
             days = pd.date_range(end = datetime.today(), periods = period, freq='M').to_pydatetime().tolist()
             #Die Käufe/Verkäufe, die vor dem Zeitraum liegen werden aufsummiert
-            beginn = Purchase.query.filter(Purchase.date < days[1].strftime('%Y-%m-%d')).all()
+            beginn = Purchase.query.filter(Purchase.date < days[0].strftime('%Y-%m-%d')).all()
             for currency in currencies:
                 for purchase in beginn:
                     if purchase.currency == currency and purchase.buyer == current_user:

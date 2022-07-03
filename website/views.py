@@ -9,8 +9,6 @@ from PIL import Image
 import os
 import pandas as pd
 import yfinance as yf
-import plotly.graph_objs as go
-import plotly.io as pio
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 

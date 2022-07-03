@@ -65,7 +65,8 @@ def activity():
         if form.type.data == 'Sell':
             days = pd.date_range(end = datetime.today(), start = form.date.data.strftime('%Y-%m-%d')).to_pydatetime().tolist()
             for day in days:
-                if float(form.amount.data) > Purchase.query.with_entities(func.sum(Purchase.amount)).filter(Purchase.user_id==current_user.id,Purchase.currency_id==currency.id,Purchase.date <= day.strftime('%Y-%m-%d')).scalar():
+                
+                if Purchase.query.filter(Purchase.user_id==current_user.id).first() == None or float(form.amount.data) > Purchase.query.with_entities(func.sum(Purchase.amount)).filter(Purchase.user_id==current_user.id,Purchase.currency_id==currency.id,Purchase.date <= day.strftime('%Y-%m-%d')).scalar():
                     flash('Amount Exceeds Your Deposit Value!', 'danger')
                     return redirect(url_for('views.activity'))
             form.amount.data = form.amount.data * -1
@@ -108,7 +109,8 @@ def update_purchase(purchase_id):
         return redirect(url_for('views.account'))
     #Damit die Änderung besser vorgenommen werden kann werden die bisherigen Daten an das Formular weitergegeben
     elif request.method == 'GET':
-        form.type.data = purchase.type
+        if purchase.amount < 0:
+            form.type.data = "Sell"
         form.date.data = purchase.date
         form.amount.data = abs(purchase.amount)
         form.currency.data = purchase.currency.name
@@ -236,7 +238,7 @@ def portfolio():
             #Die Tage in dem ausgewählten Zeitraum werden ermittelt
             days = pd.date_range(end = datetime.today(), periods = period, freq='M').to_pydatetime().tolist()
             #Die Käufe/Verkäufe, die vor dem Zeitraum liegen werden aufsummiert
-            beginn = Purchase.query.filter(Purchase.date < days[0].strftime('%Y-%m-%d')).all()
+            beginn = Purchase.query.filter(Purchase.date < days[0].strftime('%Y-%m')).all()
             for currency in currencies:
                 for purchase in beginn:
                     if purchase.currency == currency and purchase.buyer == current_user:

@@ -16,7 +16,7 @@ def register():
     if form.validate_on_submit():
         #Das Password wird gehasht mit Bcrypt (Blowfish Algorithmus)
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        #hashed_password = bcrypt.hashpw(form.password.data.encode('utf-8'), bcrypt.gensalt())
+        #User wird in die Datenbank eingespeichert
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()

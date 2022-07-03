@@ -38,9 +38,7 @@
                 <a class="nav-item nav-link" id="home" href="{{ url_for('views.activity') }}">New Activity</a>
                 {% endif %}
                 <a class="nav-item nav-link" id="home" href="{{ url_for('views.converter') }}">Converter</a>
-                
               </div>
-                
               <div class="navbar-nav">
                 {% if current_user.is_authenticated %}
                 <a class="nav-item nav-link" id="history" href="{{ url_for('views.account') }}">My Account</a>
@@ -74,9 +72,6 @@
                 </div>   
             </div>
         </main>
-
-
-    
 
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

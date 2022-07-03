@@ -4,15 +4,11 @@
 
 {% block content %}
 
-    <h1>Homepage</h1>
     {% for currency in currencies | reverse %}
         <article class="media content-section">
-            
-            
             <div class="media-body">
                 <div class="article-metadata">
                     <a class="mr-2" href="#">{{ currency.identifier }}</a>
-                    
                 </div>
                 <h2><a class="article-title" href="{{ url_for('views.portfolio') }}">{{ currency.name }}</a></h2>
             </div>

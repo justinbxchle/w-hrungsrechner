@@ -4,81 +4,79 @@
 
 {% block content %}
 
-<div class="content-section">
-    <form method="POST", action="">
-        {{ form.hidden_tag() }}
-        <!--That is adding a CSRF-Token Informieren -->
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{legend}}</legend>
+    <div class="content-section">
+        <form method="POST", action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{legend}}</legend>
+                <div class="form-group">
+                    {{ form.input.label(class="form-control-label") }}
+                    {% if form.input.errors %}
+                        {{ form.input(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.input.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.input(class="form-control form-control-lg") }}
+                    {% endif %} 
+                </div>
+                <div class="form-group">
+                    {{ form.output.label(class="form-control-label") }}
+                    {% if form.output.errors %}
+                        {{ form.output(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.output.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.output(class="form-control form-control-lg") }}
+                    {% endif %} 
+                </div> 
+                <div class="form-group">
+                    {{ form.amount.label(class="form-control-label") }}
+                    {% if form.amount.errors %}
+                        {{ form.amount(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.amount.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.amount(class="form-control form-control-lg") }}
+                    {% endif %} 
+                </div> 
+            </fieldset>
             <div class="form-group">
-                {{ form.input.label(class="form-control-label") }}
-                {% if form.input.errors %}
-                    {{ form.input(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.input.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.input(class="form-control form-control-lg") }}
-                {% endif %} 
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
-            <div class="form-group">
-                {{ form.output.label(class="form-control-label") }}
-                {% if form.output.errors %}
-                    {{ form.output(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.output.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.output(class="form-control form-control-lg") }}
-                {% endif %} 
-            </div> 
-            <div class="form-group">
-                {{ form.amount.label(class="form-control-label") }}
-                {% if form.amount.errors %}
-                    {{ form.amount(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.amount.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.amount(class="form-control form-control-lg") }}
-                {% endif %} 
-            </div> 
-        </fieldset>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
 {% endblock %}
 
 
 {% block content_right %}
 
-{% if rate %}
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <h2 class="article-title">Result</h2>
+    {% if rate %}
+
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h2 class="article-title">Result</h2>
+                </div>
+                <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'common') }} {{ Currency.query.filter_by(name=form.input.data).first().identifier }}/{{ Currency.query.filter_by(name=form.output.data).first().identifier }}</p>  
+                <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
+            </div>
+        </article>
+        <div class="media body" style="margin-top: 10px">
+            <a class="btn btn-secondary btn-sm m-1" style="align-items: center" target="_blank" href="https://finance.yahoo.com/quote/{{ Currency.query.filter_by(name=form.input.data).first().identifier }}{{ Currency.query.filter_by(name=form.output.data).first().identifier }}=X">Yahoo Finance</a>
         </div>
-        <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'common') }} {{ Currency.query.filter_by(name=form.input.data).first().identifier }}/{{ Currency.query.filter_by(name=form.output.data).first().identifier }}</p>  
-        <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
-    </div>
-</article>
 
-<div class="media body" style="margin-top: 10px">
-    <a class="btn btn-secondary btn-sm m-1" style="align-items: center" target="_blank" href="https://finance.yahoo.com/quote/{{ Currency.query.filter_by(name=form.input.data).first().identifier }}{{ Currency.query.filter_by(name=form.output.data).first().identifier }}=X">Yahoo Finance</a>
-</div>
-
-
-{% endif %}
+    {% endif %}
 
 {% endblock %}
-<!-- Erstellen der Filteroberfläche -->
+
 

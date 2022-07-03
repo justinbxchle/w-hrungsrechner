@@ -3,6 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
     {% for currency in currencies %}
         <article class="media content-section">
             <div class="media-body">
@@ -12,40 +13,40 @@
                     </h4>
                 </div>
                 <div class="articel-content">
-        {% for purchase in purchases | reverse %}
-        {% if purchase.buyer == current_user and purchase.currency == currency %}
-            <article class="media content-section">
-                <div class="media-body purchase">
-                    <div class="article-metadata">
-                        <small>Value</small>
-                        <small class="text-muted">{{ purchase.date.strftime('%Y-%m-%d') }}</small>
+                {% for purchase in purchases | reverse %}
+                {% if purchase.buyer == current_user and purchase.currency == currency %}
+                    <article class="media content-section">
+                        <div class="media-body purchase">
+                            <div class="article-metadata">
+                                <small>Value</small>
+                                <small class="text-muted">{{ purchase.date.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                            <p class="article-content">{{ purchase.amount }} {{ purchase.currency.character }}</p>
+                        </div>
+                        <div class="media-body purchase">
+                            <div class="article-metadata">
+                                <small>Value</small>
+                                <small class="text-muted">{{ datetime.now().strftime('%Y-%m-%d') }}</small>
+                            </div>
+                            <p class="article-content">{{ purchase.amount * purchase.currency.rate |round(3)}} $</p>
+                        </div>
+                    </article>
+                {% endif %}
+                {% endfor %}
+                {% if Purchase.query.filter(Purchase.currency_id==currency.id,Purchase.user_id==current_user.id).first() %}
+                <hr>
+                <hr>
+                <article class="media content-section">
+                    <div class="media-body purchase">
+                        <p class="article-content">Value:</p>
                     </div>
-                    <p class="article-content">{{ purchase.amount }} {{ purchase.currency.character }}</p>
-                </div>
-                <div class="media-body purchase">
-                    <div class="article-metadata">
-                        <small>Value</small>
-                        <small class="text-muted">{{ datetime.now().strftime('%Y-%m-%d') }}</small>
+                    <div class="media-body purchase">
+                        <p class="article-content">{{ Purchase.query.with_entities(func.sum(Purchase.amount)).filter(Purchase.currency_id==currency.id, Purchase.user_id==current_user.id).scalar() * currency.rate | round(2, 'common')}} $</p>
                     </div>
-                    <p class="article-content">{{ purchase.amount * purchase.currency.rate |round(3)}} $</p>
-                </div>
-            
-            </article>
-        {% endif %}
-        {% endfor %}
-        {% if Purchase.query.filter_by(currency_id=currency.id).first() %}
-        <hr>
-        <hr>
-            <article class="media content-section">
-                <div class="media-body purchase">
-                    <p class="article-content">Value:</p>
-                </div>
-                <div class="media-body purchase">
-                    <p class="article-content">{{ Purchase.query.with_entities(func.sum(Purchase.amount)).filter_by(currency=currency).scalar() * currency.rate | round(2, 'common')}} $</p>
-                </div>
-            </article>
-        {% endif %}
-        </div>
+                </article>
+                {% endif %}
+            </div>
         </article>
     {% endfor %}
+
 {% endblock %}

@@ -21,24 +21,21 @@
         {% if purchase.buyer == current_user %}
             <article class="media content-section">
                 <h1 class="article-identifier">{{ purchase.currency.identifier }}</h1>
-                
                 <div class="media-body">
                     <div class="article-metadata">
                         <small>Value</small>
                         <small class="text-muted">{{ purchase.date.strftime('%Y-%m-%d') }}</small>
-                        
-                            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('views.update_purchase', purchase_id=purchase.id) }}">Update</a>
-                            <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url_for('views.delete_purchase', purchase_id=purchase.id) }}">Delete</a>
-                        
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('views.update_purchase', purchase_id=purchase.id) }}">Update</a>
+                        <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url_for('views.delete_purchase', purchase_id=purchase.id) }}">Delete</a>
                     </div>
                     <p class="article-content">{{ purchase.amount }} {{ purchase.currency.character }}</p>
-                    
                 </div>
             </article>
         {% endif %}
     {% endfor %}
 
     {% block modal %}{% endblock %}
+    
 {% endblock %}
 
 {% block content_right %}

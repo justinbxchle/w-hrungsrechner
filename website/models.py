@@ -25,21 +25,29 @@ class Purchase(db.Model):
     date = db.Column(db.Date, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    currency_id = db.Column(db.Integer, db.ForeignKey('currency.id'), nullable=False)
+    currency_id = db.Column(db.String(20), db.ForeignKey('currency.id'), nullable=False)
 
     def __repr__(self):
         return f"Purchase('{self.id}','{self.amount}', '{self.user_id}', '{self.currency_id}')"
 
 class Currency(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    identifier = db.Column(db.String(100), nullable=False)
+    id = db.Column(db.String(20), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    character = db.Column(db.String(2), nullable=False)
-    rate = db.Column(db.Float, nullable=False)
+    rate = db.Column(db.Float, nullable=False) 
+    character_id = db.Column(db.Integer, db.ForeignKey('character.id') , nullable=False)
     purchases = db.relationship('Purchase', backref='currency', lazy=True)
 
     def __repr__(self):
         return f"{self.name}"
+
+class Character(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    character = db.Column(db.String(2), nullable=False)
+    currencies = db.relationship('Currency', backref='character', lazy=True)
+
+    def __repr__(self):
+        return f"{self.character}"
+
 
 
 

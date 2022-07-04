@@ -67,12 +67,12 @@
                 <div class="article-metadata">
                     <h2 class="article-title">Result</h2>
                 </div>
-                <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'common') }} {{ Currency.query.filter_by(name=form.input.data).first().identifier }}/{{ Currency.query.filter_by(name=form.output.data).first().identifier }}</p>  
-                <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}}{{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
+                <p class="article-content">The Current Exchange Rate: {{ rate | round(4, 'common') }} {{ Currency.query.filter_by(name=form.input.data).first().id }}/{{ Currency.query.filter_by(name=form.output.data).first().id }}</p>  
+                <p class="article-content">The Total Value: <br> {{ value | round(2, 'common')}} {{ Currency.query.filter_by(name=form.output.data).first().character }}</p>        
             </div>
         </article>
         <div class="media body" style="margin-top: 10px">
-            <a class="btn btn-secondary btn-sm m-1" style="align-items: center" target="_blank" href="https://finance.yahoo.com/quote/{{ Currency.query.filter_by(name=form.input.data).first().identifier }}{{ Currency.query.filter_by(name=form.output.data).first().identifier }}=X">Yahoo Finance</a>
+            <a class="btn btn-secondary btn-sm m-1" style="align-items: center" target="_blank" href="https://finance.yahoo.com/quote/{{ Currency.query.filter_by(name=form.input.data).first().id }}{{ Currency.query.filter_by(name=form.output.data).first().id }}=X">Yahoo Finance</a>
         </div>
 
     {% endif %}

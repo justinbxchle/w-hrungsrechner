@@ -20,7 +20,7 @@
     {% for purchase in purchases | reverse %}
         {% if purchase.buyer == current_user %}
             <article class="media content-section">
-                <h1 class="article-identifier">{{ purchase.currency.identifier }}</h1>
+                <h1 class="article-identifier">{{ purchase.currency.id }}</h1>
                 <div class="media-body">
                     <div class="article-metadata">
                         <small>Value</small>

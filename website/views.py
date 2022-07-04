@@ -41,7 +41,7 @@ def converter():
                 flash('Choose Two Different Currencies!', 'danger')
                 return redirect(url_for('views.converter'))
             #Der Aktuelle Währungskurs wird mithilfe von Yahoo Finance bezogen
-            ticker = str(input.identifier + output.identifier + "=X")
+            ticker = str(input.id + output.id + "=X")
             rate = yf.Ticker(ticker).info['regularMarketPrice']
             value = form.amount.data * rate
         except:
@@ -63,13 +63,12 @@ def activity():
         if form.type.data == 'Sell':
             days = pd.date_range(end = datetime.today(), start = form.date.data.strftime('%Y-%m-%d')).to_pydatetime().tolist()
             for day in days:
-                
                 if Purchase.query.filter(Purchase.user_id==current_user.id).first() == None or float(form.amount.data) > Purchase.query.with_entities(func.sum(Purchase.amount)).filter(Purchase.user_id==current_user.id,Purchase.currency_id==currency.id,Purchase.date <= day.strftime('%Y-%m-%d')).scalar():
                     flash('Amount Exceeds Your Deposit Value!', 'danger')
                     return redirect(url_for('views.activity'))
             form.amount.data = form.amount.data * -1
         #Wenn kein Error entsteht wird der neue Kauf/Verkauf in die Datenbank eingespeichert
-        purchase = Purchase(date=form.date.data, amount=form.amount.data, buyer=current_user, currency=currency, type=form.type.data)
+        purchase = Purchase(date=form.date.data, amount=form.amount.data, buyer=current_user, currency=currency)
         db.session.add(purchase)
         db.session.commit()
         flash('Purchase has been added!', 'success')
@@ -187,7 +186,7 @@ def update_account():
 @views.route('/dashboard')
 @login_required
 def dashboard():
-    purchases = Purchase.query.order_by(Purchase.date).all()
+    purchases = Purchase.query.order_by(Purchase.date).filter(Purchase.user_id==current_user.id).all()
     currencies = Currency.query.all()
     return render_template("dashboard.html", purchases=purchases, datetime=datetime, currencies=currencies, Purchase=Purchase, func=func)
 
@@ -280,7 +279,7 @@ def portfolio():
 def UpdateRate():
     currencies = Currency.query.all()
     for currency in currencies:
-        rate = yf.Ticker(currency.identifier + 'USD=X').info['regularMarketPrice']
+        rate = yf.Ticker(currency.id + 'USD=X').info['regularMarketPrice']
         currency.rate = rate
         db.session.commit()
 

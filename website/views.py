@@ -151,7 +151,6 @@ def save_picture(form_picture, old_pic):
     i.thumbnail(output_size)
     i.save(picture_path)
     return picture_filename
-#Methode schreiben zum löschen der alten Bilder, wenn das Bild geändert wird
 
 #Account
 @views.route('/account', methods=['GET'])
@@ -186,7 +185,7 @@ def update_account():
 @views.route('/dashboard')
 @login_required
 def dashboard():
-    purchases = Purchase.query.order_by(Purchase.date).filter(Purchase.user_id==current_user.id).all()
+    purchases = Purchase.query.filter(Purchase.user_id==current_user.id).all()
     currencies = Currency.query.all()
     return render_template("dashboard.html", purchases=purchases, datetime=datetime, currencies=currencies, Purchase=Purchase, func=func)
 

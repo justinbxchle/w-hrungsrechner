@@ -8,9 +8,9 @@
         <article class="media content-section">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="#">{{ currency.id }}</a>
+                    <a class="mr-2" target="_blank" href="https://www.google.de/search?q={{currency.name}}">{{ currency.id }}</a>
                 </div>
-                <h2><a class="article-title" href="{{ url_for('views.portfolio') }}">{{ currency.name }}</a></h2>
+                <h2><a class="article-title" target="_blank" href="https://www.google.de/search?q={{currency.name}}">{{ currency.name }}</a></h2>
             </div>
         </article>
     {% endfor %}
